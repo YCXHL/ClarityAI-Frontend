@@ -33,14 +33,14 @@ ClarityAI 是一个智能需求对齐工具的前端界面，通过美观直观�
 ### 1. 克隆项目
 
 ```bash
-git clone <repository-url>
-cd ClarityAI-web
+git clone https://github.com/YCXHL/ClarityAI-Frontend.git
+cd ClarityAI-Frontend
 ```
 
 ### 2. 安装依赖
 
 ```bash
-npm install
+npm i
 ```
 
 ### 3. 配置环境变量（可选）
@@ -138,7 +138,7 @@ ClarityAI-web/
 
 在设置页面可以配置后端服务器地址：
 
-1. **官方服务器**（本地）：`http://localhost:5000/api`
+1. **官方服务器**：`http://localhost:5000/api`
 2. **自定义服务器**：输入任意后端地址
 
 配置会保存在浏览器 `localStorage` 中，下次访问自动生效。
@@ -253,21 +253,7 @@ npm run preview
 npm run format
 ```
 
-## 📄 许可证
-
-MIT License
-
-## 🔗 相关链接
-
-- [后端项目](https://github.com/your-username/clarityai-server)
-- [Element Plus 文档](https://element-plus.org/)
-- [Vue 3 文档](https://vuejs.org/)
-- [Vite 文档](https://vitejs.dev/)
+## 📄 开源协议： GPL v3
 
 ## 👨‍💻 作者
-
-Royan
-
-## 🙏 致谢
-
-感谢使用 ClarityAI！
+Royan([Royan·小站](https://www.ycxhl.top))
