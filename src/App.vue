@@ -3,8 +3,9 @@ import { RouterView } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Document, Setting, HomeFilled, CircleCheck, CircleClose } from '@element-plus/icons-vue'
+import { Document, Setting, HomeFilled, CircleCheck, CircleClose, StarFilled } from '@element-plus/icons-vue'
 import { apiService } from '@/utils/api'
+
 
 const router = useRouter()
 const showProjectList = ref(false)
@@ -38,11 +39,11 @@ const goToHome = () => {
 }
 
 const openGithub = () => {
-  window.open('https://github.com', '_blank')
+  window.open('https://github.com/YCXHL/ClarityAI-Frontend', '_blank')
 }
 
 const openBlog = () => {
-  window.open('https://royan.blog', '_blank')
+  window.open('https://www.ycxhl.top', '_blank')
 }
 
 const viewProjects = () => {
@@ -89,6 +90,10 @@ const viewProject = (projectId) => {
 const openSettings = () => {
   showSettings.value = true
   connectionStatus.value = ''
+}
+
+const gotoGithub = () => {
+  window.location.href = "https://github.com/YCXHL/ClarityAI-Frontend";
 }
 
 const saveSettings = () => {
@@ -148,6 +153,10 @@ const formatDate = (dateString) => {
             <el-icon><Setting /></el-icon>
             设置
           </el-button>
+          <el-button @click="gotoGithub" text size="large">
+            <el-icon><StarFilled /></el-icon>
+            在Github上Star
+          </el-button>
         </nav>
       </div>
     </header>
@@ -183,7 +192,7 @@ const formatDate = (dateString) => {
       <el-form label-position="top">
         <el-form-item label="服务器类型">
           <el-radio-group v-model="serverType">
-            <el-radio label="official">官方服务器（本地）</el-radio>
+            <el-radio label="official">官方服务器</el-radio>
             <el-radio label="custom">自定义服务器</el-radio>
           </el-radio-group>
         </el-form-item>

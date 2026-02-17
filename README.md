@@ -2,6 +2,8 @@
 
 AI 驱动的需求对齐工具 - 前端界面
 
+[后端仓库](https://github.com/YCXHL/ClarityAI-Backend)
+
 ## 📖 项目简介
 
 ClarityAI 是一个智能需求对齐工具的前端界面，通过美观直观的交互设计，帮助用户轻松完成需求澄清过程。采用 Vue 3 + Element Plus 构建，支持响应式布局和流畅的动画效果。
