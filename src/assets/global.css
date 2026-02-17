@@ -1,0 +1,122 @@
+/* 全局样式 */
+:root {
+  --primary-color: #409eff;
+  --primary-light: #ecf5ff;
+  --success-color: #67c23a;
+  --warning-color: #e6a23c;
+  --danger-color: #f56c6c;
+  --info-color: #909399;
+  --border-color: #dcdfe6;
+  --bg-color: #f5f7fa;
+  --text-primary: #303133;
+  --text-regular: #606266;
+  --text-secondary: #909399;
+  --text-placeholder: #c0c4cc;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* 卡片样式优化 */
+.el-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  border: none !important;
+}
+
+.el-card__header {
+  background-color: #fafafa;
+  border-bottom: 1px solid var(--border-color) !important;
+  padding: 16px 20px !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.el-card__body {
+  padding: 24px !important;
+}
+
+/* 按钮样式优化 */
+.el-button--primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.el-button--primary:hover,
+.el-button--primary:focus {
+  background: #66b1ff;
+  border-color: #66b1ff;
+  color: #fff;
+}
+
+.el-button--success {
+  background-color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+/* 输入框样式优化 */
+.el-input__wrapper {
+  border-radius: 8px !important;
+}
+
+.el-textarea__inner {
+  border-radius: 8px !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* 单选按钮样式优化 */
+.el-radio {
+  margin-right: 24px !important;
+  margin-bottom: 12px !important;
+}
+
+/* 对话框样式优化 */
+.el-dialog {
+  border-radius: 12px !important;
+}
+
+.el-dialog__header {
+  padding: 20px 24px 10px !important;
+}
+
+.el-dialog__body {
+  padding: 20px 24px !important;
+}
+
+.el-dialog__footer {
+  padding: 16px 24px 24px !important;
+}
+
+/* 加载动画样式 */
+.el-loading-spinner {
+  color: var(--primary-color) !important;
+}
+
+.el-loading-spinner .path {
+  stroke: var(--primary-color) !important;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

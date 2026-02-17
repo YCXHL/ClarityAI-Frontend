@@ -1,0 +1,251 @@
+/* 全局按钮动效样式 */
+
+/* 基础按钮动效 */
+.el-button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.el-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.el-button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.el-button:active {
+  transform: scale(0.95);
+}
+
+/* 主要按钮 */
+.el-button--primary {
+  background: linear-gradient(135deg, #409eff 0%, #66b1ff 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
+}
+
+.el-button--primary:hover {
+  background: linear-gradient(135deg, #66b1ff 0%, #409eff 100%);
+  box-shadow: 0 6px 16px rgba(64, 158, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 成功按钮 */
+.el-button--success {
+  background: linear-gradient(135deg, #67c23a 0%, #85ce61 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(103, 194, 58, 0.3);
+}
+
+.el-button--success:hover {
+  background: linear-gradient(135deg, #85ce61 0%, #67c23a 100%);
+  box-shadow: 0 6px 16px rgba(103, 194, 58, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 警告按钮 */
+.el-button--warning {
+  background: linear-gradient(135deg, #e6a23c 0%, #ebb563 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(230, 162, 60, 0.3);
+}
+
+.el-button--warning:hover {
+  background: linear-gradient(135deg, #ebb563 0%, #e6a23c 100%);
+  box-shadow: 0 6px 16px rgba(230, 162, 60, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 信息按钮 */
+.el-button--info {
+  background: linear-gradient(135deg, #909399 0%, #a6a9ad 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(144, 147, 153, 0.3);
+}
+
+.el-button--info:hover {
+  background: linear-gradient(135deg, #a6a9ad 0%, #909399 100%);
+  box-shadow: 0 6px 16px rgba(144, 147, 153, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 危险按钮 */
+.el-button--danger {
+  background: linear-gradient(135deg, #f56c6c 0%, #f78989 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(245, 108, 108, 0.3);
+}
+
+.el-button--danger:hover {
+  background: linear-gradient(135deg, #f78989 0%, #f56c6c 100%);
+  box-shadow: 0 6px 16px rgba(245, 108, 108, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 文字按钮 */
+.el-button--text {
+  background: transparent;
+  box-shadow: none;
+}
+
+.el-button--text:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: none;
+}
+
+/* 加载状态 */
+.el-button.is-loading {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* 禁用状态 */
+.el-button.is-disabled {
+  background: #dcdfe6;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* 卡片动效 */
+.el-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.el-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* 输入框动效 */
+.el-input__wrapper {
+  transition: all 0.3s;
+  box-shadow: 0 0 0 1px #dcdfe6 inset;
+}
+
+.el-input__wrapper:hover {
+  box-shadow: 0 0 0 1px #c0c4cc inset;
+}
+
+.el-input__wrapper.is-focus {
+  box-shadow: 0 0 0 1px #409eff inset;
+}
+
+/* 对话框动效 */
+.el-dialog {
+  animation: dialogSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes dialogSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 消息提示动效 */
+.el-message {
+  animation: messageSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -100%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* 加载动画增强 */
+.el-loading-spinner .path {
+  stroke-dasharray: 90, 150;
+  stroke-dashoffset: 0;
+  stroke-linecap: round;
+  animation: loadingSpinner 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingSpinner {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    transform: rotate(0deg);
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -40;
+    transform: rotate(180deg);
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -120;
+    transform: rotate(360deg);
+  }
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #409eff 0%, #66b1ff 100%);
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #66b1ff 0%, #409eff 100%);
+}
+
+/* 链接动效 */
+a {
+  position: relative;
+  transition: color 0.3s;
+}
+
+a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.3s;
+}
+
+a:hover::after {
+  width: 100%;
+}
