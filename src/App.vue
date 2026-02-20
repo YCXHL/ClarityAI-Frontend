@@ -13,6 +13,13 @@ const showSettings = ref(false)
 const projects = ref([])
 const apiBaseUrl = ref('https://clarityapi.ycxhl.top/api')
 const serverType = ref('official') // 'official' 或 'custom'
+
+// 自定义 API 配置
+const apiConfigType = ref('default') // 'default' 或 'custom'
+const customApiKey = ref('')
+const customApiBaseUrl = ref('')
+const customModel = ref('')
+
 const connectionStatus = ref('')
 const testingConnection = ref(false)
 
@@ -31,6 +38,16 @@ onMounted(() => {
     if (savedApiUrl !== 'https://clarityapi.ycxhl.top/api') {
       serverType.value = 'custom'
     }
+  }
+  
+  // 加载自定义 API 配置
+  const savedApiConfig = localStorage.getItem('clarityai_api_config')
+  if (savedApiConfig) {
+    const config = JSON.parse(savedApiConfig)
+    apiConfigType.value = config.type || 'default'
+    customApiKey.value = config.apiKey || ''
+    customApiBaseUrl.value = config.baseUrl || ''
+    customModel.value = config.model || ''
   }
 })
 
@@ -103,6 +120,16 @@ const saveSettings = () => {
     : apiBaseUrl.value
   
   localStorage.setItem('clarityai_api_url', finalUrl)
+  
+  // 保存自定义 API 配置
+  const apiConfig = {
+    type: apiConfigType.value,
+    apiKey: customApiKey.value,
+    baseUrl: customApiBaseUrl.value,
+    model: customModel.value
+  }
+  localStorage.setItem('clarityai_api_config', JSON.stringify(apiConfig))
+  
   ElMessage.success('设置已保存，请刷新页面生效')
   showSettings.value = false
 }
@@ -147,7 +174,7 @@ const formatDate = (dateString) => {
           </el-button>
           <el-button @click="viewProjects" text size="large">
             <el-icon><Document /></el-icon>
-            项目列表
+            项目历史记录
           </el-button>
           <el-button @click="openSettings" text size="large">
             <el-icon><Setting /></el-icon>
@@ -172,7 +199,7 @@ const formatDate = (dateString) => {
     </footer>
 
     <!-- 项目列表对话框 -->
-    <el-dialog v-model="showProjectList" title="项目列表" width="600px">
+    <el-dialog v-model="showProjectList" title="项目历史记录列表" width="600px">
       <div v-if="projects.length === 0" class="empty-projects">
         <el-empty description="暂无项目记录" />
       </div>
@@ -188,7 +215,7 @@ const formatDate = (dateString) => {
     </el-dialog>
 
     <!-- 设置对话框 -->
-    <el-dialog v-model="showSettings" title="设置" width="500px">
+    <el-dialog v-model="showSettings" title="设置" width="600px">
       <el-form label-position="top">
         <el-form-item label="服务器类型">
           <el-radio-group v-model="serverType">
@@ -200,6 +227,31 @@ const formatDate = (dateString) => {
           <el-input v-model="apiBaseUrl" placeholder="https://clarityapi.ycxhl.top/api" />
           <div class="form-tip">请输入完整的 API 地址，例如：https://clarityapi.ycxhl.top/api</div>
         </el-form-item>
+        
+        <el-divider>AI 模型配置</el-divider>
+        
+        <el-form-item label="API 配置">
+          <el-radio-group v-model="apiConfigType">
+            <el-radio label="default">使用服务端默认配置</el-radio>
+            <el-radio label="custom">自定义 API 配置</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        
+        <template v-if="apiConfigType === 'custom'">
+          <el-form-item label="API Key">
+            <el-input v-model="customApiKey" type="password" placeholder="sk-..." show-password />
+            <div class="form-tip">您的 API 密钥，仅存储在本地浏览器</div>
+          </el-form-item>
+          <el-form-item label="API 地址">
+            <el-input v-model="customApiBaseUrl" placeholder="https://dashscope.aliyuncs.com/compatible-mode/v1" />
+            <div class="form-tip">例如：https://dashscope.aliyuncs.com/compatible-mode/v1</div>
+          </el-form-item>
+          <el-form-item label="模型名称">
+            <el-input v-model="customModel" placeholder="qwen-max" />
+            <div class="form-tip">例如：qwen-max, qwen-plus, gpt-4 等</div>
+          </el-form-item>
+        </template>
+        
         <el-form-item label="测试连接">
           <el-button @click="testConnection" :loading="testingConnection" type="primary">
             测试连接

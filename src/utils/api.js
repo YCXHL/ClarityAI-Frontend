@@ -6,6 +6,22 @@ const getApiBaseUrl = () => {
   return savedUrl || 'https://clarityapi.ycxhl.top/api'
 }
 
+// 从 localStorage 获取自定义 API 配置
+const getCustomApiConfig = () => {
+  const savedConfig = localStorage.getItem('clarityai_api_config')
+  if (savedConfig) {
+    const config = JSON.parse(savedConfig)
+    if (config.type === 'custom') {
+      return {
+        api_key: config.apiKey,
+        base_url: config.baseUrl,
+        model: config.model
+      }
+    }
+  }
+  return null
+}
+
 // 创建 axios 实例
 const createApiClient = () => {
   const client = axios.create({
@@ -71,7 +87,11 @@ export const apiService = {
   // 生成问题
   generateQuestions: (idea) => {
     const client = getApiClient()
-    return client.post('/generate-questions', { idea })
+    const customApi = getCustomApiConfig()
+    return client.post('/generate-questions', { 
+      idea,
+      custom_api: customApi
+    })
   },
   
   // 获取会话数据（包括问题）
@@ -83,7 +103,12 @@ export const apiService = {
   // 提交答案
   submitAnswers: (sessionId, answers) => {
     const client = getApiClient()
-    return client.post('/submit-answers', { session_id: sessionId, answers })
+    const customApi = getCustomApiConfig()
+    return client.post('/submit-answers', { 
+      session_id: sessionId, 
+      answers,
+      custom_api: customApi
+    })
   },
   
   // 生成 PDF
@@ -95,7 +120,12 @@ export const apiService = {
   // 继续细化需求
   continueWithFeedback: (sessionId, feedback) => {
     const client = getApiClient()
-    return client.post('/continue-with-feedback', { session_id: sessionId, feedback })
+    const customApi = getCustomApiConfig()
+    return client.post('/continue-with-feedback', { 
+      session_id: sessionId, 
+      feedback,
+      custom_api: customApi
+    })
   },
   
   // 删除会话
