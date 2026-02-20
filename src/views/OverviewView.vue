@@ -36,6 +36,10 @@
           <span class="icon-text">🔗</span>
           <h3>需求对齐过程</h3>
         </div>
+        <div class="timeline-note">
+          <el-icon><InfoFilled /></el-icon>
+          <span>说明：每轮报告会基于该轮及之前所有轮次的问答内容综合生成，因此每轮显示的是所有历史问答</span>
+        </div>
 
         <div class="timeline">
           <!-- 第一轮问答 -->
@@ -101,6 +105,7 @@ import { ref, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import { apiService } from '@/utils/api'
+import { InfoFilled } from '@element-plus/icons-vue'
 import { ArrowRight } from '@element-plus/icons-vue'
 import MarkdownIt from 'markdown-it'
 
@@ -155,41 +160,27 @@ const timelineData = computed(() => {
   const reports = sessionData.value.reports || []
   const answers = sessionData.value.answers || []
   const questions = sessionData.value.questions || []
-  
-  // 由于问题是替换的而不是追加的，我们需要特殊处理
-  // 假设每一轮报告对应一轮问答
+
+  // 按报告轮次显示
+  // 注意：由于问题会被替换，这里显示的是最后一轮的问题和所有历史答案
   for (let i = 0; i < reports.length; i++) {
     const roundData = {
       qas: [],
       report: reports[i]
     }
     
-    // 对于第一轮，使用所有问题和答案
-    // 对于后续轮次，只显示新增的问题和答案
-    if (i === 0) {
-      // 第一轮：显示所有问答
-      const qaCount = Math.min(questions.length, answers.length)
-      for (let j = 0; j < qaCount; j++) {
-        roundData.qas.push({
-          question: questions[j]?.text || '',
-          answer: answers[j]?.answer || ''
-        })
-      }
-    } else {
-      // 后续轮次：这里简化处理，显示所有问答
-      // 在实际应用中，可能需要更复杂的逻辑来追踪每轮的问题
-      const qaCount = Math.min(questions.length, answers.length)
-      for (let j = 0; j < qaCount; j++) {
-        roundData.qas.push({
-          question: questions[j]?.text || '',
-          answer: answers[j]?.answer || ''
-        })
-      }
+    // 显示所有问答（因为每轮报告都是基于所有历史问答生成的）
+    const qaCount = Math.min(questions.length, answers.length)
+    for (let j = 0; j < qaCount; j++) {
+      roundData.qas.push({
+        question: questions[j]?.text || '',
+        answer: answers[j]?.answer || ''
+      })
     }
     
     data.push(roundData)
   }
-  
+
   // 如果没有报告但有问答，添加一轮
   if (reports.length === 0 && answers.length > 0) {
     const roundData = {
@@ -205,7 +196,7 @@ const timelineData = computed(() => {
     }
     data.push(roundData)
   }
-  
+
   return data
 })
 
@@ -379,6 +370,22 @@ const goBack = () => {
   margin: 0;
   color: #2c3e50;
   font-size: 1.3rem;
+}
+
+.timeline-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background-color: #ecf5ff;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  color: #409eff;
+}
+
+.timeline-note .el-icon {
+  font-size: 1.1rem;
 }
 
 .section-header {
