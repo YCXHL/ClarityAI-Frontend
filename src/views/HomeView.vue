@@ -4,6 +4,7 @@
       <h1>ClarityAI - 懂你的项目需求</h1>
       <p>通过多轮交互式对话，帮助您从模糊的初步想法逐步明确为结构化项目需求</p>
       <p>将对齐后的需求报告发给AI，让AI更懂你的需求</p>
+      <p>本网站由<a href="https://ycxhl.top">Royan</a>公益搭建并维护，如果你觉得这个工具对你有帮助，欢迎<a href="https://ifdian.net/a/royandr">点击此处</a>赞助我！</p>
     </div>
     
     <div class="input-section">

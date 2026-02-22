@@ -14,8 +14,6 @@
         </div>
         <div class="project-info">
           <p><strong>项目 ID:</strong> {{ sessionId }}</p>
-          <p><strong>创建时间:</strong> {{ formatDate(sessionData.created_at) }}</p>
-          <p><strong>最后更新:</strong> {{ formatDate(sessionData.updated_at) }}</p>
         </div>
       </div>
 
@@ -35,10 +33,6 @@
         <div class="timeline-header">
           <span class="icon-text">🔗</span>
           <h3>需求对齐过程</h3>
-        </div>
-        <div class="timeline-note">
-          <el-icon><InfoFilled /></el-icon>
-          <span>说明：每轮报告会基于该轮及之前所有轮次的问答内容综合生成，因此每轮显示的是所有历史问答</span>
         </div>
 
         <div class="timeline">
@@ -122,6 +116,7 @@ const sessionData = ref({
   answers: [],
   reports: []
 })
+const rounds = ref([]) // 存储轮次数据
 
 // 折叠状态
 const expandedQa = ref([]) // 默认全部折叠
@@ -154,22 +149,33 @@ const renderMarkdown = (text) => {
   return md.render(text)
 }
 
-// 计算时间线数据
+// 计算时间线数据（使用轮次数据，保持问答对应关系）
 const timelineData = computed(() => {
+  if (rounds.value.length > 0) {
+    // 使用轮次数据
+    return rounds.value.map(round => ({
+      qas: round.questions.map((q, index) => ({
+        question: q?.text || '',
+        answer: round.answers[index]?.answer || ''
+      })),
+      report: round.report,
+      round_number: round.round_number,
+      created_at: round.created_at
+    }))
+  }
+  
+  // 降级到旧逻辑（如果没有轮次数据）
   const data = []
   const reports = sessionData.value.reports || []
   const answers = sessionData.value.answers || []
   const questions = sessionData.value.questions || []
 
-  // 按报告轮次显示
-  // 注意：由于问题会被替换，这里显示的是最后一轮的问题和所有历史答案
   for (let i = 0; i < reports.length; i++) {
     const roundData = {
       qas: [],
       report: reports[i]
     }
     
-    // 显示所有问答（因为每轮报告都是基于所有历史问答生成的）
     const qaCount = Math.min(questions.length, answers.length)
     for (let j = 0; j < qaCount; j++) {
       roundData.qas.push({
@@ -181,7 +187,6 @@ const timelineData = computed(() => {
     data.push(roundData)
   }
 
-  // 如果没有报告但有问答，添加一轮
   if (reports.length === 0 && answers.length > 0) {
     const roundData = {
       qas: [],
@@ -220,6 +225,15 @@ onMounted(async () => {
     const response = await apiService.getSessionData(sessionId)
     sessionData.value = response.data
     
+    // 加载轮次数据（保持问答对应关系）
+    try {
+      const roundsResponse = await apiService.getSessionRounds(sessionId)
+      rounds.value = roundsResponse.data.rounds || []
+    } catch (roundsError) {
+      console.warn('Failed to load rounds data, using fallback:', roundsError)
+      // 降级到旧逻辑
+    }
+    
     // 更新项目最后访问时间
     const savedProjects = localStorage.getItem('clarityai_projects')
     if (savedProjects) {
@@ -251,9 +265,6 @@ const downloadFullProcess = () => {
   // 项目信息
   markdownContent += '## 项目信息\n\n'
   markdownContent += `- **项目 ID:** ${sessionId}\n`
-  markdownContent += `- **创建时间:** ${formatDate(sessionData.value.created_at)}\n`
-  markdownContent += `- **最后更新:** ${formatDate(sessionData.value.updated_at)}\n\n`
-  
   // 原始想法
   markdownContent += '## 原始想法\n\n'
   markdownContent += `${sessionData.value.idea}\n\n`
@@ -261,39 +272,64 @@ const downloadFullProcess = () => {
   // 对齐过程
   markdownContent += '## 需求对齐过程\n\n'
   
-  const reports = sessionData.value.reports || []
-  const answers = sessionData.value.answers || []
-  const questions = sessionData.value.questions || []
-  
-  for (let i = 0; i < reports.length; i++) {
-    markdownContent += `### 第 ${i + 1} 轮对齐\n\n`
+  // 优先使用轮次数据
+  if (rounds.value.length > 0) {
+    rounds.value.forEach((round, index) => {
+      markdownContent += `### 第 ${round.round_number || (index + 1)} 轮对齐\n\n`
+      markdownContent += `**时间:** ${formatDate(round.created_at)}\n\n`
+      
+      // 问答内容
+      markdownContent += '#### 问答内容\n\n'
+      round.questions.forEach((q, qIndex) => {
+        const a = round.answers[qIndex]?.answer || ''
+        markdownContent += `**Q${qIndex + 1}:** ${q.text || ''}\n\n`
+        markdownContent += `**A${qIndex + 1}:** ${a}\n\n`
+      })
+      
+      // 阶段性报告
+      if (round.report) {
+        markdownContent += '#### 阶段性报告\n\n'
+        markdownContent += `${round.report}\n\n`
+      }
+      
+      markdownContent += '---\n\n'
+    })
+  } else {
+    // 降级到旧逻辑
+    const reports = sessionData.value.reports || []
+    const answers = sessionData.value.answers || []
+    const questions = sessionData.value.questions || []
     
-    // 问答内容
-    markdownContent += '#### 问答内容\n\n'
-    const qaCount = Math.min(questions.length, answers.length)
-    for (let j = 0; j < qaCount; j++) {
-      const q = questions[j]?.text || ''
-      const a = answers[j]?.answer || ''
-      markdownContent += `**Q${j + 1}:** ${q}\n\n`
-      markdownContent += `**A${j + 1}:** ${a}\n\n`
+    for (let i = 0; i < reports.length; i++) {
+      markdownContent += `### 第 ${i + 1} 轮对齐\n\n`
+      
+      // 问答内容
+      markdownContent += '#### 问答内容\n\n'
+      const qaCount = Math.min(questions.length, answers.length)
+      for (let j = 0; j < qaCount; j++) {
+        const q = questions[j]?.text || ''
+        const a = answers[j]?.answer || ''
+        markdownContent += `**Q${j + 1}:** ${q}\n\n`
+        markdownContent += `**A${j + 1}:** ${a}\n\n`
+      }
+      
+      // 阶段性报告
+      markdownContent += '#### 阶段性报告\n\n'
+      markdownContent += `${reports[i]}\n\n`
+      
+      markdownContent += '---\n\n'
     }
     
-    // 阶段性报告
-    markdownContent += '#### 阶段性报告\n\n'
-    markdownContent += `${reports[i]}\n\n`
-    
-    markdownContent += '---\n\n'
-  }
-  
-  // 如果没有报告但有问答
-  if (reports.length === 0 && answers.length > 0) {
-    markdownContent += '### 问答内容\n\n'
-    const qaCount = Math.min(questions.length, answers.length)
-    for (let j = 0; j < qaCount; j++) {
-      const q = questions[j]?.text || ''
-      const a = answers[j]?.answer || ''
-      markdownContent += `**Q${j + 1}:** ${q}\n\n`
-      markdownContent += `**A${j + 1}:** ${a}\n\n`
+    // 如果没有报告但有问答
+    if (reports.length === 0 && answers.length > 0) {
+      markdownContent += '### 问答内容\n\n'
+      const qaCount = Math.min(questions.length, answers.length)
+      for (let j = 0; j < qaCount; j++) {
+        const q = questions[j]?.text || ''
+        const a = answers[j]?.answer || ''
+        markdownContent += `**Q${j + 1}:** ${q}\n\n`
+        markdownContent += `**A${j + 1}:** ${a}\n\n`
+      }
     }
   }
   

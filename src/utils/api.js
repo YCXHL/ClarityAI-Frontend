@@ -100,6 +100,12 @@ export const apiService = {
     return client.get(`/session/${sessionId}`)
   },
   
+  // 获取轮次数据（保持问答对应关系）
+  getSessionRounds: (sessionId) => {
+    const client = getApiClient()
+    return client.get(`/session/${sessionId}/rounds`)
+  },
+  
   // 提交答案
   submitAnswers: (sessionId, answers) => {
     const client = getApiClient()

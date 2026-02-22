@@ -184,6 +184,7 @@ const formatDate = (dateString) => {
             <el-icon><StarFilled /></el-icon>
             在Github上Star
           </el-button>
+          <a href="https://ifdian.net/a/royandr"><img width="150" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a >
         </nav>
       </div>
     </header>
@@ -225,7 +226,7 @@ const formatDate = (dateString) => {
         </el-form-item>
         <el-form-item label="后端服务器地址" v-if="serverType === 'custom'">
           <el-input v-model="apiBaseUrl" placeholder="https://clarityapi.ycxhl.top/api" />
-          <div class="form-tip">请输入完整的 API 地址，例如：https://clarityapi.ycxhl.top/api</div>
+          <div class="form-tip">请输入完整的 API 地址，例如：https://clarityapi.ycxhl.top/api，注意后面要加上“/api”!!</div>
         </el-form-item>
         
         <el-divider>AI 模型配置</el-divider>
@@ -240,7 +241,7 @@ const formatDate = (dateString) => {
         <template v-if="apiConfigType === 'custom'">
           <el-form-item label="API Key">
             <el-input v-model="customApiKey" type="password" placeholder="sk-..." show-password />
-            <div class="form-tip">您的 API 密钥，仅存储在本地浏览器</div>
+            <div class="form-tip">您的 API 密钥（仅存储在本地浏览器）</div>
           </el-form-item>
           <el-form-item label="API 地址">
             <el-input v-model="customApiBaseUrl" placeholder="https://dashscope.aliyuncs.com/compatible-mode/v1" />
@@ -248,7 +249,7 @@ const formatDate = (dateString) => {
           </el-form-item>
           <el-form-item label="模型名称">
             <el-input v-model="customModel" placeholder="qwen-max" />
-            <div class="form-tip">例如：qwen-max, qwen-plus, gpt-4 等</div>
+            <div class="form-tip">推荐使用qwen-flash，速度快且准确率高</div>
           </el-form-item>
         </template>
         

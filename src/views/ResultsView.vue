@@ -64,7 +64,7 @@
         v-model="refinementFeedback"
         type="textarea"
         :autosize="{ minRows: 4, maxRows: 8 }"
-        placeholder="例如：我想增加用户权限管理功能... 或者 我对之前的某个需求有新的想法..."
+        placeholder="例如：我对之前的某个需求有新的想法..."
         maxlength="1000"
         show-word-limit
       />

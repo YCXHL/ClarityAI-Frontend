@@ -9,20 +9,21 @@
       <div v-for="(question, index) in questions" :key="question.id" class="question-item">
         <h4>{{ index + 1 }}. {{ question.text }}</h4>
         
-        <!-- 选择题 -->
-        <el-radio-group 
+        <!-- 选择题（多选） -->
+        <el-checkbox-group 
           v-if="question.type === 'choice'" 
           v-model="answers[question.id]"
           class="question-options"
         >
-          <el-radio 
+          <el-checkbox 
             v-for="option in question.options" 
             :key="option" 
             :label="option"
+            border
           >
             {{ option }}
-          </el-radio>
-        </el-radio-group>
+          </el-checkbox>
+        </el-checkbox-group>
         
         <!-- 填空题 -->
         <el-input
@@ -61,13 +62,7 @@
         >
           提交答案
         </el-button>
-        <el-button 
-          @click="showFeedbackDialog = true"
-          size="large"
-          :disabled="submitting || loading"
-        >
-          我想补充一些信息
-        </el-button>
+        
       </div>
     </el-card>
     
@@ -144,6 +139,11 @@ onMounted(() => {
 const hasAnsweredAllRequired = computed(() => {
   return questions.value.length > 0 && questions.value.every(q => {
     const answer = answers.value[q.id]
+    // 选择题需要检查数组是否非空
+    if (q.type === 'choice' && Array.isArray(answer)) {
+      return answer.length > 0
+    }
+    // 其他类型检查字符串是否非空
     return answer !== undefined && answer !== null && answer.toString().trim() !== ''
   })
 })
@@ -158,7 +158,12 @@ onMounted(async () => {
     
     // 初始化答案对象
     questions.value.forEach(q => {
-      answers.value[q.id] = ''
+      // 选择题初始化为空数组（支持多选），其他类型初始化为空字符串
+      if (q.type === 'choice') {
+        answers.value[q.id] = []
+      } else {
+        answers.value[q.id] = ''
+      }
     })
   } catch (error) {
     console.error('Error loading questions:', error)
@@ -173,9 +178,18 @@ const submitAnswers = async () => {
   
   try {
     // 准备答案数据 - 按照问题顺序排列
-    const answerList = questions.value.map(q => ({
-      answer: answers.value[q.id] || ''
-    }))
+    const answerList = questions.value.map(q => {
+      const answer = answers.value[q.id]
+      // 选择题的答案是数组，转换成逗号分隔的字符串
+      if (q.type === 'choice' && Array.isArray(answer)) {
+        return {
+          answer: answer.join(', ')
+        }
+      }
+      return {
+        answer: answer || ''
+      }
+    })
     
     // 提交答案
     const response = await apiService.submitAnswers(sessionId, answerList)
