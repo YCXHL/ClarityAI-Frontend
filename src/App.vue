@@ -186,7 +186,7 @@ const formatDate = (dateString) => {
           </el-button>
           <a href="https://ifdian.net/a/royandr"><img width="150" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a >
         </nav>
-      </div>
+      </div> 
     </header>
     <main class="app-main">
       <RouterView />
